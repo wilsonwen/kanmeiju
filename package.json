@@ -1,0 +1,32 @@
+{
+  "name": "kanmeiju",
+  "version": "0.2.6",
+  "description": "kanmeiju backend using Express, Redis, Mongodb & react",
+  "engines": {
+    "node": "6.10.2"
+  },
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "postinstall": "cd web && npm run build"
+  },
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "express": "4.15.2",
+    "md5": "^2.2.1",
+    "npm": "^4.5.0",
+    "redis": "^2.7.1",
+    "request": "^2.81.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wilsonwen/kanmeiju"
+  },
+  "keywords": [
+    "node",
+    "heroku",
+    "express",
+    "kanmeiju"
+  ],
+  "license": "MIT"
+}

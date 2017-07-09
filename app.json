@@ -1,0 +1,8 @@
+{
+  "name": "Kanmeiju App",
+  "description": "A app for those who like watching drama",
+  "repository": "https://github.com/wilsonwen/kanmeiju",
+  "logo": "http://node-js-sample.herokuapp.com/node.svg",
+  "keywords": ["node", "express", "heroku"],
+  "image": "heroku/nodejs"
+}
