@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
-import Config from '../config'
+import Config from '../../config'
 import { hashHistory } from 'react-router';
-import Spin from './spin'
+import Spin from '../spin'
 import './episode.css'
+
+import { VelocityTransitionGroup } from 'velocity-react';
 
 class EpisodeId extends Component {
 
@@ -43,9 +45,7 @@ class Episode extends Component {
 
   fetchData(sid) {
   	let url = this.config.server + '/api/detail/' + sid;
-  	console.log(url);
   	fetch(url).then((res) => res.json()).then((data) => {
-  		console.log(data);
   		this.setState({
   			searchDone: true,
   			json: data
@@ -76,8 +76,9 @@ class Episode extends Component {
 				    return a.episode - b.episode;
 				});
 		  	for(var i = 0; i < list.length; i++) {
+		  		let title = '《' + this.state.json.data.season.title + '》第' + list[i].episode + '集'
 		  		episodes.push(
-		  			<EpisodeId key={i} episode={list[i]} title={this.state.json.data.season.title + '  ' + list[i].episode}/>
+		  			<EpisodeId key={i} episode={list[i]} title={title}/>
 		  		)
 		  	}
 		  	/* content */
@@ -116,8 +117,11 @@ class Episode extends Component {
 		}
 
   	return (
-  	  <div className='col-lg-10 col-centered'>
+  	  <div>
+  	  	<VelocityTransitionGroup enter={{animation: "transition.slideLeftIn"}} leave={{animation: "transition.slideRightOut"}}
+                                  runOnMount={true}>
   	  	{ content }
+  	  	</VelocityTransitionGroup>
   	  </div>
   	)
 

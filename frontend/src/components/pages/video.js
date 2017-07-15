@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
-import Config from '../config'
+import Config from '../../config'
 import { hashHistory } from 'react-router';
-import Spin from './spin'
+import Spin from '../spin'
+import { VelocityTransitionGroup } from 'velocity-react';
+
+import './video.css'
 
 class Video extends Component {
 
@@ -25,7 +28,6 @@ class Video extends Component {
   	let url = this.config.server + '/api/m3u8/' + episodeSid;
   	console.log(url);
   	fetch(url).then((res) => res.json()).then((data) => {
-  		console.log(data);
   		this.setState({
   			fetchDone: true,
   			json: data
@@ -59,8 +61,11 @@ class Video extends Component {
 
     return (
 	    <div className="col-xs-12">
-	    	<h1>{this.props.params.title}</h1>
+	    	<VelocityTransitionGroup enter={{animation: "transition.slideLeftIn"}} leave={{animation: "transition.slideRightOut"}}
+                                  runOnMount={true}>
+	    	<p className="video-title">{this.props.params.title}</p>
 	    	{ content }
+	    	</VelocityTransitionGroup>
 	    </div>
     )
 	}

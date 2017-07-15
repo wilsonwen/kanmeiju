@@ -1,0 +1,20 @@
+#rightbar-nav {
+	width:12%;
+}
+
+#rightbar-nav .navbar-nav ul {
+	float: none;
+	display: block;
+}
+
+#rightbar-nav .navbar-nav li {
+	float: none;
+	display: block;
+	padding: 5px 0 0 0;
+	margin: 0 0 0 0;
+}
+
+#rightbar-nav .navbar-nav li a{
+	padding-top: 5px;
+	padding-bottom:  5px;
+}

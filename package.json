@@ -7,8 +7,8 @@
   },
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "postinstall": "cd web && npm install && npm run build"
+    "start": "node backend/index.js",
+    "postinstall": "cd frontend && npm install && npm run build"
   },
   "dependencies": {
     "body-parser": "^1.17.2",

@@ -1,10 +1,17 @@
 body {
   padding-top: 70px;
+  background: #f9f9f9;
 }
 
 
 .App {
   text-align: center;
+}
+
+.App .content {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  background: #fff;
 }
 
 .App-logo {

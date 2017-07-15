@@ -1,0 +1,25 @@
+#leftbar-nav {
+	width:10%;
+	text-align: left;
+	border: none;
+}
+
+
+
+#leftbar-nav .navbar-nav ul {
+	float: none;
+	display: block;
+	box-sizing: none;
+}
+
+#leftbar-nav .navbar-nav li {
+	float: none;
+	display: block;
+	padding: 5px 0 0 0;
+	margin: 0 0 0 0;
+}
+
+#leftbar-nav .navbar-nav li a{
+	padding-top: 5px;
+	padding-bottom:  5px;
+}

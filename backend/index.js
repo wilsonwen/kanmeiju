@@ -53,7 +53,7 @@ function getJSON(url, response, body, headers=FAKE_HEADERS) {
     };
 
     // add redis cache
-    var key = JSON.stringify(body);
+    var key = url + JSON.stringify(body);
     client.exists(key, function(err, reply) {
         if (reply === 1) {
             client.get(key, function(err, reply) {
@@ -129,6 +129,61 @@ app.get('/api/m3u8/:episodeSid', function(req, res) {
     getJSON(API, res, body, headers)
 
 });
+
+/**
+ * API: Index
+ *
+ */
+ app.get('/api/index', function(req, res) {
+    var API = SERVER + '/v3plus/video/indexInfo'
+    console.log('/api/index');
+    getJSON(API, res, {});
+ });
+
+ /**
+ * API: hot
+ *
+ */
+ app.get('/api/hot', function(req, res) {
+    var API = SERVER + '/video/seasonRankingList'
+    console.log('/api/hot');
+    getJSON(API, res, {});
+ });
+
+ /**
+ * API: top
+ *
+ */
+ app.get('/api/top', function(req, res) {
+    var API = SERVER + '/v3plus/season/topList'
+    console.log('/api/top');
+    getJSON(API, res, {});
+ });
+
+ /**
+ * API: album
+ *
+ */
+ app.get('/api/album/:albumId', function(req, res) {
+    var API = SERVER + '/v3plus/video/album'
+    console.log('/api/album');
+    getJSON(API, res, {'albumId': req.params.albumId});
+ });
+
+ /**
+ * API: category
+ *
+ */
+ app.get('/api/category/:categoryType/:pages', function(req, res) {
+    var API = SERVER + '/v3plus/video/search'
+    console.log('/api/category');
+    getJSON(API, res, {'name': 'cat_list', 
+                       'cat': req.params.categoryType, 
+                       'page': req.params.pages});
+ });
+
+
+
 
 app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
