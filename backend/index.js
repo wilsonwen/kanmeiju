@@ -10,7 +10,7 @@ var client = redis.createClient(process.env.REDIS_URL);
  * Configuration
  */
 app.set('port', (process.env.PORT || 5000));
-app.use(express.static(__dirname + '/web/build/'));
+app.use(express.static(__dirname + '/frontend/build/'));
 app.use(parser.json());
 app.use(parser.urlencoded({ extended: true }));
 app.use(function(req, res, next) {
