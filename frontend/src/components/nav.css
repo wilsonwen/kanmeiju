@@ -4,12 +4,15 @@
 }
 
 .navbar-search {
-
-	padding-top: 8px;
+	margin: 0 0 0 0;
+	padding-left: 0;
+	padding-top: 10px;
 }
 
 .navbar-brand {
 	margin: 0 auto;
+	padding-left:0;
+	padding-right: 0;
 	font-size: 18px;
 }
 

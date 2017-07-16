@@ -36,15 +36,14 @@ class Nav extends Component {
   	  	<nav id="nav" className="navbar navbar-fixed-top">
           <div className="container">
             <div className="row">
-              <div className="col-sm-2 hidden-xs ">
+              <div className="col-sm-2 col-xs-5">
                 <Link className="navbar-brand" to="/">
-                  <img src={logo} height="27px"/>
-                  <span className="title hidden-sm"><strong>看美剧</strong></span>
-                  
+                  <img className="" src={logo} height="27px"/>
+                  <span className="title"><strong>看美剧</strong></span>
                 </Link>
               </div>
 
-              <div className="navbar-search col-sm-8 col-xs-12">
+              <div className="navbar-search col-sm-8 col-xs-6">
                 <div className="input-group">
 
                   <input className='form-control' 
