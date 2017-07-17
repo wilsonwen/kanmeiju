@@ -42,8 +42,13 @@ app.get('/', function(req, res) {
 
 /**
  * getJSON as client
+ *
+ * url - url of api
+ * body - from body data
+ * callback - callback function with returning json
+ * headers - headers if necessary
  */
-function getJSON(url, response, body, headers=FAKE_HEADERS) {
+function getJSON(url, body, callback, headers=FAKE_HEADERS) {
     
     var options = {
         url : url,
@@ -52,31 +57,45 @@ function getJSON(url, response, body, headers=FAKE_HEADERS) {
         form: body
     };
 
-    // add redis cache
-    var key = url + JSON.stringify(body);
+    var buffer = "";
+    var req = request(options).on('error', function(err) {
+        console.log(err);
+        buffer = {code:'5000', 'msg': err};
+    }).on('response', function(res) {
+        var buffer = "";
+        res.on('data', function(data) {
+            buffer += data;
+        }).on('end', function() {     
+            callback(buffer);
+        });
+    });  
+}
+
+/**
+ * cacheAndGet
+ * 
+ * cache is redis, if not try to get from remote
+ *
+ */
+function cacheAndGet(api, body, getter, callback) {
+    var key = api + JSON.stringify(body);
     client.exists(key, function(err, reply) {
         if (reply === 1) {
             client.get(key, function(err, reply) {
-                response.send(reply);
+                callback(reply);
             });
         } else {
-            req = request(options).on('error', function(err) {
-                console.log(err);
-                response.status(500).send({code:'5000', 'msg': err});
-            }).on('response', function(res) {
-                var buffer = "";
-                res.on('data', function(data) {
-                    buffer += data;
-                }).on('end', function() {
-                    client.set(key, buffer, function(err, reply){
-                        response.send(buffer)
-                    });
-                });
-            })
-
+            // Fetch remote data and set k,v in callback
+            getter(api, body, function(json) {
+                callback(json);
+                client.set(key, json);
+                // Expire after 24 hours
+                client.expire(key, 7200);
+            });
         }
     });
 }
+
 
 /**
  * API: Search
@@ -84,9 +103,15 @@ function getJSON(url, response, body, headers=FAKE_HEADERS) {
  * {'title' : 'bigbang'}
  */
 app.get('/api/search/:title', function(req, res) {
-    var API = SERVER + '/v3plus/video/search'
-    console.log('/api/search/', req.params.title);
-    getJSON(API, res, {'title': req.params.title });
+    var api = SERVER + '/v3plus/video/search'
+    var body = {'title': req.params.title };
+    console.log('/api/search/');
+
+    // Check Redis and get from remote
+    cacheAndGet(api, body, getJSON, function(json){
+        res.send(json);
+    })
+    
 });
 
 /**
@@ -95,9 +120,14 @@ app.get('/api/search/:title', function(req, res) {
  * {'seasonId' : 1888}
  */
 app.get('/api/detail/:seasonId', function(req, res) {
-    var API = SERVER + '/v3plus/season/detail'
+    var api = SERVER + '/v3plus/season/detail'
+    var body = {'seasonId': req.params.seasonId}
     console.log('/api/detail/', req.params.seasonId)
-    getJSON(API, res, {'seasonId': req.params.seasonId}); 
+   
+    // Check Redis and get from remote
+    cacheAndGet(api, body, getJSON, function(json){
+        res.send(json);
+    })
 });
 
 /**
@@ -106,7 +136,7 @@ app.get('/api/detail/:seasonId', function(req, res) {
  * {'episodeSid' : 25005, 'quality' : 'super'}
  */
 app.get('/api/m3u8/:episodeSid', function(req, res) {
-    var API = SERVER + '/video/findM3u8ByEpisodeSid'
+    var api = SERVER + '/video/findM3u8ByEpisodeSid'
     
     // calculate signature
     var headers = FAKE_HEADERS;
@@ -126,7 +156,22 @@ app.get('/api/m3u8/:episodeSid', function(req, res) {
     console.log(key)
     console.log(md5(key))
     console.log('/api/m3u8/', req.params.episodeSid)
-    getJSON(API, res, body, headers)
+
+    // Check Redis cache first
+    var key = api + JSON.stringify(body);
+    client.exists(key, function(err, reply) {
+        if (reply === 1) {
+            client.get(key, function(err, reply) {
+                res.send(reply);
+            });
+        } else {
+            // Fetch remote data and set k,v in callback
+            getJSON(api, body, function(json) {
+                res.send(json);
+                client.set(key, json);
+            }, headers);
+        }
+    });
 
 });
 
@@ -135,9 +180,14 @@ app.get('/api/m3u8/:episodeSid', function(req, res) {
  *
  */
  app.get('/api/index', function(req, res) {
-    var API = SERVER + '/v3plus/video/indexInfo'
+    var api = SERVER + '/v3plus/video/indexInfo'
+    var body = {}
     console.log('/api/index');
-    getJSON(API, res, {});
+
+    // Check Redis and get from remote
+    cacheAndGet(api, body, getJSON, function(json){
+        res.send(json);
+    })
  });
 
  /**
@@ -145,9 +195,14 @@ app.get('/api/m3u8/:episodeSid', function(req, res) {
  *
  */
  app.get('/api/hot', function(req, res) {
-    var API = SERVER + '/video/seasonRankingList'
+    var api = SERVER + '/video/seasonRankingList'
+    var body = {}
     console.log('/api/hot');
-    getJSON(API, res, {});
+
+    // Check Redis and get from remote
+    cacheAndGet(api, body, getJSON, function(json){
+        res.send(json);
+    })
  });
 
  /**
@@ -155,9 +210,14 @@ app.get('/api/m3u8/:episodeSid', function(req, res) {
  *
  */
  app.get('/api/top', function(req, res) {
-    var API = SERVER + '/v3plus/season/topList'
+    var api = SERVER + '/v3plus/season/topList'
+    var body = {}
     console.log('/api/top');
-    getJSON(API, res, {});
+
+    // Check Redis and get from remote
+    cacheAndGet(api, body, getJSON, function(json){
+        res.send(json);
+    });
  });
 
  /**
@@ -165,9 +225,14 @@ app.get('/api/m3u8/:episodeSid', function(req, res) {
  *
  */
  app.get('/api/album/:albumId', function(req, res) {
-    var API = SERVER + '/v3plus/video/album'
+    var api = SERVER + '/v3plus/video/album'
+    var body = {'albumId': req.params.albumId}
     console.log('/api/album');
-    getJSON(API, res, {'albumId': req.params.albumId});
+
+    // Check Redis and get from remote
+    cacheAndGet(api, body, getJSON, function(json){
+        res.send(json);
+    });
  });
 
  /**
@@ -175,11 +240,16 @@ app.get('/api/m3u8/:episodeSid', function(req, res) {
  *
  */
  app.get('/api/category/:categoryType/:pages', function(req, res) {
-    var API = SERVER + '/v3plus/video/search'
-    console.log('/api/category');
-    getJSON(API, res, {'name': 'cat_list', 
+    var api = SERVER + '/v3plus/video/search'
+    var body = {'name': 'cat_list', 
                        'cat': req.params.categoryType, 
-                       'page': req.params.pages});
+                       'page': req.params.pages};
+    console.log('/api/category');
+
+    // Check Redis and get from remote
+    cacheAndGet(api, body, getJSON, function(json){
+        res.send(json);
+    });
  });
 
 
