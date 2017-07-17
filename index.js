@@ -3,8 +3,10 @@ var request = require('request');
 var parser = require('body-parser');
 var md5 = require('md5')
 var redis = require('redis')
+var mongoose = require('mongoose')
 var app = express();
 var client = redis.createClient(process.env.REDIS_URL);
+mongoose.connect(process.env.MONGODB_URI);
 
 /**
  * Configuration
@@ -130,6 +132,16 @@ app.get('/api/detail/:seasonId', function(req, res) {
     })
 });
 
+
+/*
+ * Saving m3u8 in mongodb
+ * Because rr limit requests 30times per minute.
+ */
+var m3u8Schema = mongoose.Schema({
+    episodeSid: String,
+    json: Object
+});
+var M3u8 = mongoose.model('m3u8', m3u8Schema);
 /**
  * API: M3u8
  *
@@ -153,6 +165,7 @@ app.get('/api/m3u8/:episodeSid', function(req, res) {
     body['token'] = FAKE_HEADERS['token'];
     body['seasonId'] = 0;
 
+    // logging to debug
     console.log(key)
     console.log(md5(key))
     console.log('/api/m3u8/', req.params.episodeSid)
@@ -165,11 +178,21 @@ app.get('/api/m3u8/:episodeSid', function(req, res) {
                 res.send(reply);
             });
         } else {
-            // Fetch remote data and set k,v in callback
-            getJSON(api, body, function(json) {
-                res.send(json);
-                client.set(key, json);
-            }, headers);
+            // try to find in mongodb
+            M3u8.find({episodeSid: req.params.episodeSid}, function(err, m3u8s){
+                if(err) return console.log(err);
+                if (m3u8s.length !== 0) {
+                    res.send(mu3u8s[0]);
+                } else {
+                    // Fetch remote data and set k,v in callback
+                    getJSON(api, body, function(json) {
+                        res.send(json);
+                        client.set(key, json);
+                        var m3u8 = new M3u8({episodeSid: req.params.episodeSid, json: json})
+                        m3u8.save();
+                    }, headers);
+                }
+            });
         }
     });
 
