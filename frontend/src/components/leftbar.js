@@ -5,7 +5,7 @@ import './leftbar.css'
 class Leftbar extends Component {
   render() {
   	return (
-  	  <div>
+  	  <div id="leftbar">
 
         <div id="leftbar-nav" className="hidden-xs affix">
     	  	<nav className="navbar">
@@ -40,15 +40,19 @@ class Leftbar extends Component {
           <nav className="navbar navbar-default">
             <div className="container">
               <div className="navbar-header">
-
+                
                 <button type="button" className="navbar-toggle collapsed" data-toggle="collapse" data-target="#sidebar2">
-                  <span className="sr-only">Toggle navigation</span>
+                  <span className="sr-only"></span>
                   <span className="icon-bar"></span>
                   <span className="icon-bar"></span>
                   <span className="icon-bar"></span>
                 </button>
-
+                <div className="navbar-brand text-center">
+                导航
+                </div>
               </div>
+
+
               <div id="sidebar2" className="navbar-collapse collapse">
                 <ul className="nav navbar-nav">
                   <li><Link to='/latest'>最新更新</Link></li>

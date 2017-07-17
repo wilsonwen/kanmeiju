@@ -23,3 +23,9 @@
 	padding-top: 5px;
 	padding-bottom:  5px;
 }
+
+
+#leftbar .navbar-brand {
+	margin: 0 auto;
+	float:none;
+}
