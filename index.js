@@ -91,8 +91,8 @@ function cacheAndGet(api, body, getter, callback) {
             getter(api, body, function(json) {
                 callback(json);
                 client.set(key, json);
-                // Expire after 24 hours
-                client.expire(key, 7200);
+                // Expire after half hours
+                client.expire(key, 1800);
             });
         }
     });
@@ -178,21 +178,13 @@ app.get('/api/m3u8/:episodeSid', function(req, res) {
                 res.send(reply);
             });
         } else {
-            // try to find in mongodb
-            M3u8.find({episodeSid: req.params.episodeSid}, function(err, m3u8s){
-                if(err) return console.log(err);
-                if (m3u8s.length !== 0) {
-                    res.send(mu3u8s[0]);
-                } else {
-                    // Fetch remote data and set k,v in callback
-                    getJSON(api, body, function(json) {
-                        res.send(json);
-                        client.set(key, json);
-                        var m3u8 = new M3u8({episodeSid: req.params.episodeSid, json: json})
-                        m3u8.save();
-                    }, headers);
-                }
-            });
+            
+            // Fetch remote data and set k,v in callback
+            getJSON(api, body, function(json) {
+                res.send(json);
+                client.set(key, json);
+                client.expire(key, 1800);
+            }, headers); 
         }
     });
 
