@@ -14,11 +14,22 @@ import Episode from './components/pages/episode';
 import Video from './components/pages/video';
 import registerServiceWorker from './registerServiceWorker';
 
+// veloctity animation
 require('velocity-animate');
 require('velocity-animate/velocity.ui');
 
+// google analytics
+var ReactGA = require('react-ga');
+ReactGA.initialize('UA-41223128-5');
+function routerOnUpdate() {
+  window.scrollTo(0, 0);
+  ReactGA.set({ page: window.location.pathname + window.location.search });
+  ReactGA.pageview(window.location.pathname + window.location.search);
+}
+
+
 ReactDOM.render((
-  <Router onUpdate={() => window.scrollTo(0, 0)} history={hashHistory}>
+  <Router onUpdate={routerOnUpdate} history={hashHistory}>
     <Route path="/" component={App}>
       <IndexRoute component={Index} id={0} />
       <Route path="/latest" component={Index} id={0} />
@@ -37,3 +48,4 @@ ReactDOM.render((
   </Router>)
   , document.getElementById('root'));
 registerServiceWorker();
+
