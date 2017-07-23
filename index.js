@@ -6,7 +6,7 @@ var redis = require('redis')
 var mongoose = require('mongoose')
 var app = express();
 var client = redis.createClient(process.env.REDIS_URL);
-mongoose.connect(process.env.MONGODB_URI);
+
 
 /**
  * Configuration
