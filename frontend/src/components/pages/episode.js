@@ -6,11 +6,13 @@ import './episode.css'
 
 import { VelocityTransitionGroup } from 'velocity-react';
 
+
 class EpisodeId extends Component {
 
 	handleClick() {
 		let url = '/video/'  + this.props.episode.episodeSid + 
 							'/' + this.props.title;
+		localStorage[this.props.sid] = JSON.stringify(this.props.episode.episode);
     hashHistory.push(url);
 	}
 
@@ -32,15 +34,23 @@ class Episode extends Component {
 
   	this.state = {
   		searchDone: false,
-  		json: {}
+  		json: {},
+  		lastWatched: 0
   	}
   	this.config = Config();
   	this.fetchData = this.fetchData.bind(this);
+  	this.updateLastVisited = this.updateLastVisited.bind(this);
   }
 
   /* callde first initialize */
   componentDidMount() {
-  	this.fetchData(this.props.params.sid);
+  	let sid = this.props.params.sid
+  	this.fetchData(sid);
+  	if (localStorage[sid] !== undefined) {
+  		this.setState({
+  			lastWatched: JSON.parse(localStorage[sid])
+  		})
+  	}
   }
 
   fetchData(sid) {
@@ -57,6 +67,30 @@ class Episode extends Component {
   	}.bind(this));
   }
 
+  /* update last visited in localstorage */
+  updateLastVisited(obj) {
+  	let lastVisited = [];
+  	const MAX_LEN = 10;
+  	if (localStorage['lastVisited'] !== undefined) {
+  		lastVisited = JSON.parse(localStorage['lastVisited']);
+  	}
+
+  	// deduplicate
+  	for (let i = 0; i < lastVisited.length; i++) {
+  		if (lastVisited[i].id == obj.id) {
+  			lastVisited.splice(i, 1);
+  			break;
+  		}
+  	}
+
+  	if (lastVisited.length > MAX_LEN) {
+  		lastVisited.shift();
+  	}
+
+  	lastVisited.unshift({id: obj.id, cover: obj.cover, title: obj.title, brief: obj.brief});
+  	localStorage['lastVisited'] = JSON.stringify(lastVisited);
+  }
+
   render() {
 
   	let content = null;
@@ -68,6 +102,7 @@ class Episode extends Component {
 	  			this.state.json.data.season.playUrlList !== undefined &&
 	  			this.state.json.data.season.playUrlList.length !== 0) {
 	  		let season = this.state.json.data.season;
+	  		this.updateLastVisited(season);
 
 	  		/* episodes list */
 	  		let episodes = [];
@@ -78,9 +113,15 @@ class Episode extends Component {
 		  	for(var i = 0; i < list.length; i++) {
 		  		let title = '《' + this.state.json.data.season.title + '》第' + list[i].episode + '集'
 		  		episodes.push(
-		  			<EpisodeId key={i} episode={list[i]} title={title}/>
+		  			<EpisodeId key={i} episode={list[i]} title={title} sid={this.props.params.sid}/>
 		  		)
 		  	}
+
+		  	let note = null
+		  	if(this.state.lastWatched != 0) {
+		  		note = <div className="alert alert-danger">上次观看到第<strong>{this.state.lastWatched}</strong>集</div>
+		  	}
+
 		  	/* content */
 		  	content = <div className="panel panel-primary"
 											 onClick={this.handleClick}>
@@ -102,8 +143,11 @@ class Episode extends Component {
 									    		
 									    	{episodes}
 									    		
-									    	</div>
-									  	</div>
+									    </div>
+									    <div>
+									    	{note}
+									    </div>
+									  </div>
 									</div>
 
 		  } else {
