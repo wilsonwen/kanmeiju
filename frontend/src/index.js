@@ -4,6 +4,7 @@ import { Router, Route, IndexRoute, hashHistory } from 'react-router';
 import './index.css';
 import App from './App';
 import Index from './components/pages/index';
+import Last from './components/pages/last'
 import Hot from './components/pages/hot';
 import Top from './components/pages/top';
 import Category from './components/pages/category';
@@ -33,7 +34,7 @@ function routerOnUpdate() {
 ReactDOM.render((
   <Router onUpdate={routerOnUpdate} history={hashHistory}>
     <Route path="/" component={App}>
-      <IndexRoute component={Index} id={0} />
+      <IndexRoute component={Last} />
       <Route path="/latest" component={Index} id={0} />
       <Route path="/hot" component={Hot} />
       <Route path="/top" component={Top} />
