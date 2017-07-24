@@ -23,8 +23,10 @@ var ReactGA = require('react-ga');
 ReactGA.initialize('UA-41223128-5');
 function routerOnUpdate() {
   window.scrollTo(0, 0);
-  ReactGA.set({ page: window.location.pathname + window.location.hash });
-  ReactGA.pageview(window.location.pathname + window.location.hash);
+  var hash = window.location.hash;
+  var path = hash.substring(0, hash.indexOf('?'));
+  ReactGA.set({ page: window.location.pathname + path });
+  ReactGA.pageview(window.location.pathname + path);
 }
 
 
