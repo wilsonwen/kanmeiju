@@ -70,7 +70,7 @@ class Episode extends Component {
   /* update last visited in localstorage */
   updateLastVisited(obj) {
   	let lastVisited = [];
-  	const MAX_LEN = 10;
+  	let MAX_LEN = 10;
   	if (localStorage['lastVisited'] !== undefined) {
   		lastVisited = JSON.parse(localStorage['lastVisited']);
   	}
@@ -85,9 +85,10 @@ class Episode extends Component {
 
   	if (lastVisited.length > MAX_LEN) {
   		lastVisited.shift();
+  		
   	}
 
-  	lastVisited.unshift({id: obj.id, cover: obj.cover, title: obj.title, brief: obj.brief});
+  	lastVisited.push({id: obj.id, cover: obj.cover, title: obj.title, brief: obj.brief});
   	localStorage['lastVisited'] = JSON.stringify(lastVisited);
   }
 

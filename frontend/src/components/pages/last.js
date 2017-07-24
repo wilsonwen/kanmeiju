@@ -51,9 +51,9 @@ class Last extends Component {
   	  /*  Season Object
   	   * {id, cover, title, intro}
   	   */
-			for(var i = 0; i < this.state.json.length; i++) {
+			for(var i = this.state.json.length - 1; i >= 0 ; i--) {
 				let obj = this.state.json[i];
-				objList[i] = {id: obj.id, cover: obj.cover, title: obj.title, intro: obj.brief};
+				objList.push({id: obj.id, cover: obj.cover, title: obj.title, intro: obj.brief});
 			}
 	  	
 	  	content = <div>
