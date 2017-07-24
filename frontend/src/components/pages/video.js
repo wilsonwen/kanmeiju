@@ -17,6 +17,7 @@ class Video extends Component {
 		}
 		this.config = Config();
   	this.fetchData = this.fetchData.bind(this);
+  	this.handleError = this.handleError.bind(this);
 	}
 
 	  /* callde first initialize */
@@ -39,6 +40,10 @@ class Video extends Component {
   	}.bind(this));
   }
 
+  handleError() {
+  	this.setState({json: {'data': undefined}});
+  }
+
   render() {
   	let content = null; 
 
@@ -47,8 +52,12 @@ class Video extends Component {
 	  	if (this.state.json.data !== undefined &&
 	  			this.state.json.data.m3u8 !== undefined &&
 	  			this.state.json.data.m3u8.url !== "") {
-	  		content = <video className="col-xs-12" src={this.state.json.data.m3u8.url} type="video/mp4" controls autoPlay>
-                </video>
+	  		content = <video className="col-xs-12" 
+	  						 src={this.state.json.data.m3u8.url} 
+	  						 type="video/mp4" 
+	  						 onError={this.handleError}
+	  						 controls autoPlay>
+                	  </video>
 		  } else {
 		  	content = <div className="alert alert-danger" role="alert">
 									  <span className="sr-only">Error:</span>
