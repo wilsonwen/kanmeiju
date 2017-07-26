@@ -42,9 +42,7 @@ app.get('/', function(req, res) {
     res.sendfile('index.html')
 });
 
-app.get('*', function (request, response){
-  response.sendFile('index.html')
-})
+
 
 /**
  * getJSON as client
@@ -271,7 +269,12 @@ app.get('/api/m3u8/:episodeSid', function(req, res) {
     });
  });
 
-
+/**
+ * wildcard
+ */
+app.get('*', function (request, response){
+  response.sendFile(path.resolve(__dirname, 'frontend/build', 'index.html'))
+})
 
 
 app.listen(app.get('port'), function() {
