@@ -1,5 +1,6 @@
 var express = require('express');
 var request = require('request');
+var path = require('path');
 var parser = require('body-parser');
 var md5 = require('md5')
 var redis = require('redis')
@@ -273,6 +274,7 @@ app.get('/api/m3u8/:episodeSid', function(req, res) {
  * wildcard
  */
 app.get('*', function (request, response){
+  console.log(path.resolve(__dirname, 'frontend/build', 'index.html'));
   response.sendFile(path.resolve(__dirname, 'frontend/build', 'index.html'))
 })
 
