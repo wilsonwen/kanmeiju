@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import Config from '../../config'
-import { hashHistory } from 'react-router';
+import { browserHistory } from 'react-router';
 import Spin from '../spin'
 import './episode.css'
 
 import { VelocityTransitionGroup } from 'velocity-react';
+import ShareButtons from 'react-share-buttons'
 
 
 class EpisodeId extends Component {
@@ -13,7 +14,7 @@ class EpisodeId extends Component {
 		let url = '/video/'  + this.props.episode.episodeSid + 
 							'/' + this.props.title;
 		localStorage[this.props.sid] = JSON.stringify(this.props.episode.episode);
-    hashHistory.push(url);
+    browserHistory.push(url);
 	}
 
 	render() {
@@ -77,7 +78,7 @@ class Episode extends Component {
 
   	// deduplicate
   	for (let i = 0; i < lastVisited.length; i++) {
-  		if (lastVisited[i].id == obj.id) {
+  		if (lastVisited[i].id === obj.id) {
   			lastVisited.splice(i, 1);
   			break;
   		}
@@ -119,9 +120,18 @@ class Episode extends Component {
 		  	}
 
 		  	let note = null
-		  	if(this.state.lastWatched != 0) {
+		  	if(this.state.lastWatched !== 0) {
 		  		note = <div className="alert alert-danger">上次观看到第<strong>{this.state.lastWatched}</strong>集</div>
 		  	}
+
+		  	let url = encodeURI("http://kanmeiju.herokuapp.com" + this.props.location.pathname);
+		  	let description = "我在这里观看了《" + season.title +"》，快来一起看吧！" ;
+		  	let shareButton = <ShareButtons 
+													  sites = {["qzone", "weibo", "qq", "tencent", "douban", "linkedin", "facebook", "google", "twitter" ]}
+													  url = {url}
+													  title = {season.title}
+													  description = {description}
+													/>
 
 		  	/* content */
 		  	content = <div className="panel panel-primary"
@@ -148,13 +158,19 @@ class Episode extends Component {
 									    <div>
 									    	{note}
 									    </div>
+
+
+									    { shareButton }
+
+									    
+									    
 									  </div>
 									</div>
 
 		  } else {
 		  	content = <div className="alert alert-danger" role="alert">
 									  <span className="sr-only">Error:</span>
-									  无法加载剧集。<a href="#" onClick={hashHistory.goBack}>返回搜索结果</a>
+									  无法加载剧集。<a href="#" onClick={browserHistory.goBack}>返回搜索结果</a>
 									</div>
 		  }
 		} else {

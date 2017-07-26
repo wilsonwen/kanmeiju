@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Link, hashHistory } from 'react-router';
+import { Link, browserHistory } from 'react-router';
 import logo from './logo.png'
 import './nav.css';
 
@@ -21,7 +21,7 @@ class Nav extends Component {
 
   handleClick() {
     let url = '/drama/' + this.state.keyText;
-    hashHistory.push(url);
+    browserHistory.push(url);
   }
 
   handleEnter(event) {

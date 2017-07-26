@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { hashHistory, Link } from 'react-router';
+import { browserHistory, Link } from 'react-router';
 import { VelocityTransitionGroup } from 'velocity-react';
 
 import "./season.css"

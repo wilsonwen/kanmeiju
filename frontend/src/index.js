@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Router, Route, IndexRoute, hashHistory } from 'react-router';
+import { Router, Route, IndexRoute, browserHistory } from 'react-router';
 import './index.css';
 import App from './App';
 import Index from './components/pages/index';
@@ -24,15 +24,13 @@ var ReactGA = require('react-ga');
 ReactGA.initialize('UA-41223128-5');
 function routerOnUpdate() {
   window.scrollTo(0, 0);
-  var hash = window.location.hash;
-  var path = hash.substring(0, hash.indexOf('?'));
-  ReactGA.set({ page: window.location.pathname + path });
-  ReactGA.pageview(window.location.pathname + path);
+  ReactGA.set({ page: window.location.pathname});
+  ReactGA.pageview(window.location.pathname);
 }
 
 
 ReactDOM.render((
-  <Router onUpdate={routerOnUpdate} history={hashHistory}>
+  <Router onUpdate={routerOnUpdate} history={browserHistory}>
     <Route path="/" component={App}>
       <IndexRoute component={Last} />
       <Route path="/latest" component={Index} id={0} />

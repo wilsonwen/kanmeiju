@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Config from '../../config'
-import { hashHistory } from 'react-router';
+import { browserHistory } from 'react-router';
 import Spin from '../spin'
 import { VelocityTransitionGroup } from 'velocity-react';
 
@@ -66,7 +66,7 @@ class SearchResults extends Component {
 		  	content = <div className="alert alert-danger" role="alert">
 									  <span className="sr-only">Error:</span>
 									  找不到和您查询的<strong><em>"{this.props.params.keyText}"</em></strong>相符的内容或信息。
-									  <a href="#" onClick={hashHistory.goBack}>返回搜索</a>
+									  <a href="#" onClick={browserHistory.goBack}>返回搜索</a>
 									</div>
 		  }
 		} else {

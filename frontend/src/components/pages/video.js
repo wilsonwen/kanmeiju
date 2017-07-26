@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Config from '../../config'
-import { hashHistory } from 'react-router';
+import { browserHistory } from 'react-router';
 import Spin from '../spin'
 import { VelocityTransitionGroup } from 'velocity-react';
 
@@ -27,7 +27,6 @@ class Video extends Component {
 
   fetchData(episodeSid) {
   	let url = this.config.server + '/api/m3u8/' + episodeSid;
-  	console.log(url);
   	fetch(url).then((res) => res.json()).then((data) => {
   		this.setState({
   			fetchDone: true,
@@ -61,7 +60,7 @@ class Video extends Component {
 		  } else {
 		  	content = <div className="alert alert-danger" role="alert">
 									  <span className="sr-only">Error:</span>
-									  抱歉，视频已经下线。<a href="#" onClick={hashHistory.goBack}>返回剧集</a>
+									  抱歉，视频已经下线。<a href="#" onClick={browserHistory.goBack}>返回剧集</a>
 									</div>
 		  }
 		} else {
