@@ -42,6 +42,10 @@ app.get('/', function(req, res) {
     res.sendfile('index.html')
 });
 
+app.get('*', function (request, response){
+  response.sendFile('index.html')
+})
+
 /**
  * getJSON as client
  *
