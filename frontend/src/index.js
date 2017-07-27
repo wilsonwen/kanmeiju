@@ -3,16 +3,6 @@ import ReactDOM from 'react-dom';
 import { Router, Route, IndexRoute, browserHistory } from 'react-router';
 import './index.css';
 import App from './App';
-import Index from './components/pages/index';
-import Last from './components/pages/last'
-import Hot from './components/pages/hot';
-import Top from './components/pages/top';
-import Category from './components/pages/category';
-import AlbumList from './components/pages/albumlist';
-import Album from './components/pages/album';
-import SearchResults from './components/pages/searchresults';
-import Episode from './components/pages/episode';
-import Video from './components/pages/video';
 import registerServiceWorker from './registerServiceWorker';
 
 // veloctity animation
@@ -28,6 +18,39 @@ function routerOnUpdate() {
   ReactGA.pageview(window.location.pathname);
 }
 
+function asyncComponent(getComponent) {
+  return class AsyncComponent extends React.Component {
+    static Component = null;
+    state = { Component: AsyncComponent.Component };
+
+    componentWillMount() {
+      if (!this.state.Component) {
+        getComponent().then(({default: Component}) => {
+          AsyncComponent.Component = Component
+          this.setState({ Component })
+        })
+      }
+    }
+    render() {
+      const { Component } = this.state
+      if (Component) {
+        return <Component {...this.props} />
+      }
+      return null
+    }
+  }
+}
+
+const Index = asyncComponent(() => import('./components/pages/index'))
+const Last = asyncComponent(() => import('./components/pages/last'))
+const Hot = asyncComponent(() => import('./components/pages/hot'))
+const Top = asyncComponent(() => import('./components/pages/top'))
+const Category = asyncComponent(() => import('./components/pages/category'))
+const AlbumList = asyncComponent(() => import('./components/pages/albumlist'))
+const Album = asyncComponent(() => import('./components/pages/album'))
+const SearchResults = asyncComponent(() => import('./components/pages/searchresults'))
+const Episode = asyncComponent(() => import('./components/pages/episode'))
+const Video = asyncComponent(() => import('./components/pages/video'))
 
 ReactDOM.render((
   <Router onUpdate={routerOnUpdate} history={browserHistory}>
