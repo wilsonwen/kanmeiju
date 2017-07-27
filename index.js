@@ -1,4 +1,5 @@
 var express = require('express');
+var compression = require('compression');
 var request = require('request');
 var path = require('path');
 var parser = require('body-parser');
@@ -13,6 +14,7 @@ var client = redis.createClient(process.env.REDIS_URL);
  * Configuration
  */
 app.set('port', (process.env.PORT || 5000));
+app.use(compression());
 app.use(express.static(__dirname + '/frontend/build'));
 app.use(parser.json());
 app.use(parser.urlencoded({ extended: true }));
