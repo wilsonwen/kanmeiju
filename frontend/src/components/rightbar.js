@@ -33,9 +33,11 @@ class Rightbar extends Component {
                 <li><Link to='/category/恐怖'>恐怖</Link></li>
                 <li><Link to='/category/历史'>历史</Link></li>
                 <li><Link to='/category/伦理'>伦理</Link></li>
-                
+                <li>扫码关注公众号<br/>推送每日更新美剧</li>
+                <img  width="80px" src="http://wx4.sinaimg.cn/mw690/6da6f8f9ly1fiezoa25fyj20zk0zk780.jpg"/>
               </ul>
             </div>
+            
           </div>
         </nav>
   	  </div>
