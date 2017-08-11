@@ -10,6 +10,7 @@
     "react-router-transition": "^0.1.1",
     "react-scripts": "1.0.10",
     "react-share-buttons": "^1.0.1",
+    "urlencode": "^1.1.0",
     "velocity-react": "^1.3.3"
   },
   "scripts": {

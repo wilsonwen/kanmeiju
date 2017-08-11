@@ -7,6 +7,10 @@ import './episode.css'
 import { VelocityTransitionGroup } from 'velocity-react';
 import ShareButtons from 'react-share-buttons'
 
+var urlencode = require('urlencode')
+
+
+
 
 class EpisodeId extends Component {
 
@@ -124,13 +128,15 @@ class Episode extends Component {
 		  		note = <div className="alert alert-danger">上次观看到第<strong>{this.state.lastWatched}</strong>集</div>
 		  	}
 
-		  	let url = encodeURI("http://kanmeiju.herokuapp.com" + this.props.location.pathname);
+		  	let url = urlencode("http://kanmeiju.herokuapp.com" + this.props.location.pathname);
+		  	console.log(url);
 		  	let description = "我在这里观看了《" + season.title +"》，快来一起看吧！" ;
 		  	let shareButton = <ShareButtons 
 													  sites = {["qzone", "weibo", "qq", "tencent", "douban", "linkedin", "facebook", "google", "twitter" ]}
 													  url = {url}
 													  title = {season.title}
 													  description = {description}
+													  image=''
 													/>
 
 		  	/* content */
