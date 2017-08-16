@@ -12,10 +12,13 @@ class SeasonList extends Component {
   render() {
     let seasonList = []
     let objList = this.props.objList;
-
 		for(var i = 0; i < objList.length; i++) {
 			let obj = objList[i];
-			seasonList.push(<Season key={i} id={obj.id} cover={obj.cover} title={obj.title} intro={obj.intro} /> );
+			seasonList.push(<Season key={i} 
+                              id={obj.id} 
+                              cover={obj.cover} 
+                              title={obj.title} 
+                              intro={obj.intro} /> );
 		}
 		  	
   	return (

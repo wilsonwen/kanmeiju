@@ -33,7 +33,7 @@ FAKE_HEADERS = {
     "clientType": "android_%E8%B1%8C%E8%B1%86%E8%8D%9A",
     "clientVersion": "3.5.3.1",
     "deviceId": "861134030056126",
-    "token": "5f8f489d12f64488aa310334f32153b4",
+    "token": "945e82b94c08447aafe45e6051159737",
     "signature": "643c184f77372e364550e77adc0360cd",
     "t": "1491433993933"
 };
