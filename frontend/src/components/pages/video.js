@@ -51,7 +51,7 @@ class Video extends Component {
 	  	if (this.state.json.data !== undefined &&
 	  			this.state.json.data.m3u8 !== undefined &&
 	  			this.state.json.data.m3u8.url !== "") {
-	  		content = <video
+	  		content = <video className="col-xs-12" 
 	  						 src={this.state.json.data.m3u8.url} 
 	  						 type="video/mp4" 
 	  						 onError={this.handleError}
