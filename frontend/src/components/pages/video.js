@@ -71,7 +71,7 @@ class Video extends Component {
 	    <div className="col-xs-12">
 	    	<VelocityTransitionGroup enter={{animation: "transition.slideLeftIn"}} leave={{animation: "transition.slideRightOut"}}
                                   runOnMount={true}>
-	    	<p className="video-title">{this.props.params.title}</p>
+	    	<h4>{this.props.params.title}</h4>
 	    	{ content }
 	    	</VelocityTransitionGroup>
 	    </div>

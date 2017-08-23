@@ -15,19 +15,18 @@ var urlencode = require('urlencode')
 class EpisodeId extends Component {
 
 	handleClick() {
-		let url = '/video/'  + this.props.episode.episodeSid + 
-							'/' + this.props.title;
 		localStorage[this.props.sid] = JSON.stringify(this.props.episode.episode);
-    browserHistory.push(url);
 	}
 
 	render() {
+		let url = '/video/'  + this.props.episode.episodeSid + 
+							'/' + this.props.title;
 		return (
-			<button type="button" 
+			<a href={url} type="button" 
 							className="btn btn-default"
 							onClick={this.handleClick.bind(this)}>
 				{this.props.episode.episode}
-			</button>
+			</a>
 		)
 	}
 }
@@ -142,7 +141,7 @@ class Episode extends Component {
 		  	/* content */
 		  	content = <div className="panel panel-primary"
 											 onClick={this.handleClick}>
-										
+
 										<script type="text/javascript" src="//cdn.chitika.net/getads.js" async></script>
 
 										<div className="panel-heading">
