@@ -189,7 +189,7 @@ app.get('/api/m3u8/:episodeSid', function(req, res) {
                 console.log(json)
                 res.send(json);
                 client.set(key, json);
-                client.expire(key, 7200);
+                client.expire(key, 3500);
             }, headers); 
         }
     });
