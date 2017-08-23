@@ -51,7 +51,7 @@ class Video extends Component {
 	  	if (this.state.json.data !== undefined &&
 	  			this.state.json.data.m3u8 !== undefined &&
 	  			this.state.json.data.m3u8.url !== "") {
-	  		content = <video className="col-xs-12" 
+	  		content = <video
 	  						 src={this.state.json.data.m3u8.url} 
 	  						 type="video/mp4" 
 	  						 onError={this.handleError}
@@ -68,10 +68,10 @@ class Video extends Component {
 		}
 
     return (
-	    <div className="col-xs-12">
+	    <div >
 	    	<VelocityTransitionGroup enter={{animation: "transition.slideLeftIn"}} leave={{animation: "transition.slideRightOut"}}
                                   runOnMount={true}>
-	    	<h4>{this.props.params.title}</h4>
+	    	<p className="video-title">{this.props.params.title}</p>
 	    	{ content }
 	    	</VelocityTransitionGroup>
 	    </div>
