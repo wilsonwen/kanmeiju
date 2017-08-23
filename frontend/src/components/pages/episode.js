@@ -25,7 +25,7 @@ class EpisodeId extends Component {
 		let url = '/video/'  + this.props.episode.episodeSid + 
 							'/' + this.props.title;
 		return (
-			<button url={url} type="button" 
+			<button name={url} type="button" 
 							className="btn btn-default"
 							onClick={this.handleClick.bind(this)}>
 				{this.props.episode.episode}
