@@ -142,6 +142,9 @@ class Episode extends Component {
 		  	/* content */
 		  	content = <div className="panel panel-primary"
 											 onClick={this.handleClick}>
+										
+										<script type="text/javascript" src="//cdn.chitika.net/getads.js" async></script>
+
 										<div className="panel-heading">
 											<h3 className="panel-title">{season.title}</h3>
 										</div>
