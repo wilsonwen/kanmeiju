@@ -107,8 +107,7 @@ function getJSON(url, body, callback, headers=FAKE_HEADERS) {
  * cache is redis, if not try to get from remote
  *
  */
-function cacheAndGet(api, body, getter, callback) {
-    var key = api + JSON.stringify(body);
+function cacheAndGet(key, api, body, getter, callback) {
     client.exists(key, function(err, reply) {
         if (reply === 1) {
             client.get(key, function(err, reply) {
@@ -138,7 +137,8 @@ app.get('/api/search/:title', function(req, res) {
     console.log('/api/search/');
 
     // Check Redis and get from remote
-    cacheAndGet(api, body, getJSON, function(json){
+    var key = api + JSON.stringify(req.params.title);
+    cacheAndGet(key, api, body, getJSON, function(json){
         res.send(json);
     })
     
@@ -155,7 +155,8 @@ app.get('/api/detail/:seasonId', function(req, res) {
     console.log('/api/detail/', req.params.seasonId)
    
     // Check Redis and get from remote
-    cacheAndGet(api, body, getJSON, function(json){
+    var key = api + JSON.stringify(req.params.seasonId);
+    cacheAndGet(key, api, body, getJSON, function(json){
         res.send(json);
     })
 });
@@ -198,12 +199,13 @@ app.get('/api/m3u8/:episodeSid', function(req, res) {
     body['seasonId'] = 0;
 
     // logging to debug
-    console.log(key)
     console.log(md5(key))
     console.log('/api/m3u8/', req.params.episodeSid)
 
     // Check Redis cache first
-    var key = api + JSON.stringify(body);
+    var key = api + JSON.stringify(req.params.episodeSid);
+    console.log(key);
+
     client.exists(key, function(err, reply) {
         if (reply === 1) {
             client.get(key, function(err, reply) {
@@ -232,7 +234,8 @@ app.get('/api/m3u8/:episodeSid', function(req, res) {
     console.log('/api/index');
 
     // Check Redis and get from remote
-    cacheAndGet(api, body, getJSON, function(json){
+    var key = api;
+    cacheAndGet(key, api, body, getJSON, function(json){
         res.send(json);
     })
  });
@@ -247,7 +250,8 @@ app.get('/api/m3u8/:episodeSid', function(req, res) {
     console.log('/api/hot');
 
     // Check Redis and get from remote
-    cacheAndGet(api, body, getJSON, function(json){
+    var key = api;
+    cacheAndGet(key, api, body, getJSON, function(json){
         res.send(json);
     })
  });
@@ -262,7 +266,8 @@ app.get('/api/m3u8/:episodeSid', function(req, res) {
     console.log('/api/top');
 
     // Check Redis and get from remote
-    cacheAndGet(api, body, getJSON, function(json){
+    var key = api;
+    cacheAndGet(key, api, body, getJSON, function(json){
         res.send(json);
     });
  });
@@ -277,7 +282,8 @@ app.get('/api/m3u8/:episodeSid', function(req, res) {
     console.log('/api/album');
 
     // Check Redis and get from remote
-    cacheAndGet(api, body, getJSON, function(json){
+    var key = api + JSON.stringify(req.params.albumId);
+    cacheAndGet(key, api, body, getJSON, function(json){
         res.send(json);
     });
  });
@@ -294,7 +300,8 @@ app.get('/api/m3u8/:episodeSid', function(req, res) {
     console.log('/api/category');
 
     // Check Redis and get from remote
-    cacheAndGet(api, body, getJSON, function(json){
+    var key = api + JSON.stringify(req.params.categoryType) + JSON.stringify(req.params.pages) ;
+    cacheAndGet(key, api, body, getJSON, function(json){
         res.send(json);
     });
  });
