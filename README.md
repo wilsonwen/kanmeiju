@@ -2,10 +2,10 @@
 A react application for watch drama
 
 ## quick start
-git clone https://github.com/wilsonwen/kanmeiju
-cd kanmeiju
-npm install
-npm start
+* git clone https://github.com/wilsonwen/kanmeiju
+* cd kanmeiju
+* npm install
+* npm start
 
 ## technology stack
 * react
