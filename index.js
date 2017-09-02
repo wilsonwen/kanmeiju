@@ -14,15 +14,24 @@ var client = redis.createClient(process.env.REDIS_URL);
  * Configuration
  */
 app.set('port', (process.env.PORT || 5000));
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+});
+app.use(function(req, res, next) {
+    if (req.headers['x-forwarded-proto'] !== 'https') {
+        //FYI this should work for local development as well
+        console.log(req.hostname)
+        return res.redirect('https://' + req.hostname + req.url);
+    }
+    next();
+});
 app.use(compression());
 app.use(express.static(__dirname + '/frontend/build'));
 app.use(parser.json());
 app.use(parser.urlencoded({ extended: true }));
-app.use(function(req, res, next) {
-      res.header("Access-Control-Allow-Origin", "*");
-        res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-          next();
-});
+
 
 /**
  * Constant Variable
@@ -60,6 +69,7 @@ FAKE_HEADERS = {
     "signature": "643c184f77372e364550e77adc0360cd",
     "t": "1491433993933"
 };
+
 
 /**
  * Serve index
