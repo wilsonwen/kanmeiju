@@ -54,7 +54,7 @@ class Video extends Component {
 	  		content = <video className="col-xs-12" 
 	  						 src={this.state.json.data.m3u8.url} 
 	  						 type="video/mp4" 
-	  						 //onError={this.handleError}
+	  						 onError={this.handleError}
 	  						 controls autoPlay>
                 	  </video>
 		  } else {
