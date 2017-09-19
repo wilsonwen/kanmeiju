@@ -19,12 +19,14 @@ app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
 });
-app.use(function(req, res, next) {
-    if (req.headers['x-forwarded-proto'] !== 'https') {
-        return res.redirect('https://' + req.hostname + req.url);
-    }
-    next();
-});
+if (process.env.NODE_ENV == 'production') {
+    app.use(function(req, res, next) {
+        if (req.headers['x-forwarded-proto'] !== 'https') {
+            return res.redirect('https://' + req.hostname + req.url);
+        }
+        next();
+    });
+}
 app.use(compression());
 app.use(express.static(__dirname + '/frontend/build'));
 app.use(parser.json());
@@ -37,18 +39,13 @@ app.use(parser.urlencoded({ extended: true }));
 SERVER = "http://api.rr.tv";
 SECRET_KEY = "clientSecret=08a30ffbc8004c9a916110683aab0060";
 TOKENS = [
-    '5e0fdfd57dda41c3910136d83a5f6b20',
-    'bb84a1b8717a4ac28d68b6a287a9d8aa',
-    'f7584e56034c4b92bf8fb69b13e1f31b',
-    '92311c495681424bb7e1293aca12c762',
-    '0e6e0e5fcd6340c5a5dfb0310cfe44fb',
-    '97c2aac3fe524b00b602a9b4c6a739b4',
-    'e8135ccc93764981aeebe41922ff1503',
-    'ae02f47222254efb997436e27c8523d3',
-    '19632a0d4a10464ca38526bcfbe1b872',
-    'a7e8cb5a6ee949689c48bef9c0cc20dc',
-    '9fde69224f95485896d3f2efe93af896',
-    '1e4db225f13f4486bf9def61cdbf71be'
+    'e1367d42fdc549d28e13f29accf638d7',
+    '810e6245ef1a40238f3aa54cd3a9762d',
+    '14c3e90af57c42c2a913695dcaa659f7',
+    'd70689b8f2524293b2c54c07b2838ef7',
+    '0b6225b4fdfe4713a31f3ae2be2742ff',
+    '9d9fc124b51e4428b4c4dcaee4184dd9',
+    '8efdbeaee5644aa8b48401fbd6ba94c5',
 ];
 
 Token_iterator = 0;
@@ -217,6 +214,7 @@ app.get('/api/m3u8/:episodeSid', function(req, res) {
             // Fetch remote data and set k,v in callback
             getJSON(api, body, function(json) {
                 res.send(json);
+                console.log(json)
                 client.set(key, json);
                 client.expire(key, 3500);
             }, headers); 
