@@ -39,7 +39,7 @@ app.use(parser.urlencoded({ extended: true }));
 SERVER = "http://api.rr.tv";
 SECRET_KEY = "clientSecret=08a30ffbc8004c9a916110683aab0060";
 TOKENS = [
-    '5cf0438edcdd435db1bfd82aeba983f1' 
+    'b30c9dbacf394f02aa704823534ad6cc' 
 ];
 
 Token_iterator = 0;
