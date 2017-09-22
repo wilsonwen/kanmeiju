@@ -6,6 +6,7 @@ var parser = require('body-parser');
 var md5 = require('md5')
 var redis = require('redis')
 var mongoose = require('mongoose')
+var randomstring = require('randomstring')
 var app = express();
 var client = redis.createClient(process.env.REDIS_URL);
 
@@ -38,16 +39,11 @@ app.use(parser.urlencoded({ extended: true }));
  */
 SERVER = "http://api.rr.tv";
 SECRET_KEY = "clientSecret=08a30ffbc8004c9a916110683aab0060";
-TOKENS = [
-    'b30c9dbacf394f02aa704823534ad6cc' 
-];
-
-Token_iterator = 0;
 FAKE_HEADERS = {
     "clientType": "android_%E8%B1%8C%E8%B1%86%E8%8D%9A",
     "clientVersion": "3.5.3.1",
     "deviceId": "861134030056126",
-    "token": "ed475779da3f42ba9f133bd45913c92b",
+    "token": "b5f41ac1b0894323aca12040c7f69f08",
     "signature": "643c184f77372e364550e77adc0360cd",
     "t": "1491433993933"
 };
@@ -92,6 +88,7 @@ function getJSON(url, body, callback, headers=FAKE_HEADERS) {
         });
     });  
 }
+
 
 /**
  * cacheAndGet
@@ -163,24 +160,23 @@ var m3u8Schema = mongoose.Schema({
     json: Object
 });
 var M3u8 = mongoose.model('m3u8', m3u8Schema);
+
 /**
- * API: M3u8
- *
- * {'episodeSid' : 25005, 'quality' : 'super'}
+ * GetM3u8
  */
-app.get('/api/m3u8/:episodeSid', function(req, res) {
+function GetM3u8(count, episodeSid, res) {
+    // To avoid death loop
+    if(count < 0) return;
+    console.log('GetM3u8 ' + count)
+
     var api = SERVER + '/video/findM3u8ByEpisodeSid'
     
-    // round-robin tokens to avoid ban
-    FAKE_HEADERS['token'] = TOKENS[(Token_iterator++)%TOKENS.length];
-    console.log(FAKE_HEADERS['token']);
-
     // calculate signature
     var headers = FAKE_HEADERS;
     var body = {}
-    body['episodeSid'] = req.params.episodeSid;
+    body['episodeSid'] = episodeSid;
     body['quality'] = 'super';
-    key = 'episodeSid=' + req.params.episodeSid;
+    key = 'episodeSid=' + episodeSid;
     key += 'quality=' + 'super';
     key += 'clientType=' + FAKE_HEADERS['clientType'];
     key += 'clientVersion=' + FAKE_HEADERS['clientVersion'];
@@ -192,11 +188,62 @@ app.get('/api/m3u8/:episodeSid', function(req, res) {
 
     // logging to debug
     console.log(md5(key))
-    console.log('/api/m3u8/', req.params.episodeSid)
+    console.log('/api/m3u8/', episodeSid)
 
+    // Fetch remote data and set k,v in callback
+    getJSON(api, body, function(json) {
+        var obj = JSON.parse(json);
+        if (obj.code != "1024") {
+            // success
+            res.send(json);
+            console.log(json)
+            client.set(key, json);
+            client.expire(key, 3500);
+        } else {
+            // token being banned, need change
+            GetToken(function(){
+                count = count - 1;
+                GetM3u8(count, episodeSid, res);
+            });
+        }
+    }, headers); 
+}
+
+/**
+ * GetToken
+ */
+function GetToken(callback) {
+    console.log('GetToken');
+    var api = SERVER + '/user/platReg'
+
+    var headers = FAKE_HEADERS;
+    var body = {}
+    var name = randomstring.generate(8)
+    body['usid'] = md5(name)
+    body['platformName'] = 'qq'
+    body['nickName'] = name
+    body['userName'] = name
+    body['securityCode'] = ''
+
+    getJSON(api, body, function(json) {
+        console.log("GetToken: " + json);
+        var obj = JSON.parse(json);
+        if (obj.code == '0000') {
+            FAKE_HEADERS['token'] = obj.data.user.token;
+        }
+        callback();
+    })
+}
+
+/**
+ * API: M3u8
+ *
+ * {'episodeSid' : 25005, 'quality' : 'super'}
+ */
+app.get('/api/m3u8/:episodeSid', function(req, res) {
+    var api = SERVER + '/video/findM3u8ByEpisodeSid'
     // Check Redis cache first
     var key = api + JSON.stringify(req.params.episodeSid);
-    console.log(key);
 
     client.exists(key, function(err, reply) {
         if (reply === 1) {
@@ -204,14 +251,7 @@ app.get('/api/m3u8/:episodeSid', function(req, res) {
                 res.send(reply);
             });
         } else {
-            
-            // Fetch remote data and set k,v in callback
-            getJSON(api, body, function(json) {
-                res.send(json);
-                console.log(json)
-                client.set(key, json);
-                client.expire(key, 3500);
-            }, headers); 
+            GetM3u8(5, req.params.episodeSid, res);
         }
     });
 
