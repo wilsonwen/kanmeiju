@@ -290,15 +290,23 @@ app.get('/api/m3u8/:episodeSid', function(req, res) {
     // Check Redis cache first
     var key = api + JSON.stringify(req.params.episodeSid);
 
-    client.exists(key, function(err, reply) {
-        if (reply === 1) {
-            client.get(key, function(err, reply) {
-                res.send(reply);
-            });
-        } else {
-            GetM3u8(5, req.params.episodeSid, res);
-        }
-    });
+    // In order to Check api, leave out 23576 to directly access 
+    if (req.params.episodeSid == "23576") {
+
+        GetM3u8(5, req.params.episodeSid, res);
+        
+    } else {
+
+        client.exists(key, function(err, reply) {
+            if (reply === 1) {
+                client.get(key, function(err, reply) {
+                    res.send(reply);
+                });
+            } else {
+                GetM3u8(5, req.params.episodeSid, res);
+            }
+        });
+    }
 
 });
 
@@ -314,6 +322,7 @@ app.get('/api/m3u8/:episodeSid', function(req, res) {
     // Check Redis and get from remote
     var key = api;
     cacheAndGet(key, api, body, getJSON, function(json){
+        console.log(json);
         res.send(json);
     })
  });
