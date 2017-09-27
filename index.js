@@ -226,7 +226,7 @@ function GetM3u8(count, episodeSid, res) {
             valid = false;
         }
 
-        if (valid || obj.code != "1024") {
+        if (valid && obj.code != "1024") {
             // success
             res.send(json);
             console.log(json)
