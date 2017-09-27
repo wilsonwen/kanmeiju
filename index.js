@@ -263,8 +263,14 @@ function GetToken(callback) {
 
     getJSON(api, body, function(json) {
         console.log("GetToken: " + json);
-        var obj = JSON.parse(json);
-        if (obj.code == '0000') {
+        var valid = true;
+        try {
+            var obj = JSON.parse(json);
+        } catch (e) {
+            valid = false;
+        }
+
+        if (valid || obj.code == '0000') {
             if(obj.data !== undefined &&
                 obj.data.user !== undefined &&
                 obj.data.user.token !== undefined)
