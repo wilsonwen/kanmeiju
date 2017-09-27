@@ -219,8 +219,14 @@ function GetM3u8(count, episodeSid, res) {
 
     // Fetch remote data and set k,v in callback
     getJSON(api, body, function(json) {
-        var obj = JSON.parse(json);
-        if (obj.code != "1024") {
+        var valid = true;
+        try {
+            var obj = JSON.parse(json);
+        } catch (e) {
+            valid = false;
+        }
+
+        if (!valid || obj.code != "1024") {
             // success
             res.send(json);
             console.log(json)
