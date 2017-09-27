@@ -270,7 +270,7 @@ function GetToken(callback) {
             valid = false;
         }
 
-        if (valid || obj.code == '0000') {
+        if (valid && obj.code == '0000') {
             if(obj.data !== undefined &&
                 obj.data.user !== undefined &&
                 obj.data.user.token !== undefined)
