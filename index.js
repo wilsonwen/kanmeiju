@@ -100,7 +100,7 @@ function getJSON(url, body, callback, headers=FAKE_HEADERS) {
         headers : headers,
         method: 'POST',
         form: body,
-        host:'122.96.59.104',
+        host:process.env.PROXY_HOST,
         port: 80
     };
 
