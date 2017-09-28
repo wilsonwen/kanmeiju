@@ -7,7 +7,7 @@ function Config(){
 
         case 'production':
             return {
-            	server: 'https://kanmeiju.herokuapp.com'
+            	server: 'http://13.124.10.165'
             };
 
         default:
