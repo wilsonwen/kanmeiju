@@ -22,8 +22,8 @@ app.use(function(req, res, next) {
 });
 if (process.env.NODE_ENV == 'production') {
     app.use(function(req, res, next) {
-        if (req.headers['x-forwarded-proto'] !== 'https') {
-            return res.redirect('https://' + req.hostname + req.url);
+        if (req.headers['x-forwarded-proto'] !== 'http') {
+            return res.redirect('http://' + req.hostname + req.url);
         }
         next();
     });
