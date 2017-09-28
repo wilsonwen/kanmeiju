@@ -2,7 +2,7 @@ function Config(){
     switch(process.env.NODE_ENV){
         case 'development':
             return {
-             	server: 'http://127.0.0.1:5000'
+             	server: 'http://13.124.10.165'
             };
 
         case 'production':
