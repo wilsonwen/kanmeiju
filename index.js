@@ -43,7 +43,7 @@ FAKE_HEADERS = {
     "clientType": "android_%E8%B1%8C%E8%B1%86%E8%8D%9A",
     "clientVersion": "3.5.3.1",
     "deviceId": "861134030056126",
-    "token": "b5f41ac1b0894323aca12040c7f69f08",
+    "token": "6b6cfdd3e90843c0a0914425638db7ef",
     "signature": "643c184f77372e364550e77adc0360cd",
     "t": "1491433993933"
 };
@@ -401,6 +401,14 @@ app.get('/api/m3u8/:episodeSid', function(req, res) {
     
  })
 
+/**
+ *
+ */
+app.get('/api/flushdb', function(req, res) {
+  client.flushdb( function (err, succeeded) {
+    res.send('flush success');
+  });
+})
 
 
 /**
