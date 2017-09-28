@@ -99,7 +99,9 @@ function getJSON(url, body, callback, headers=FAKE_HEADERS) {
         url : url,
         headers : headers,
         method: 'POST',
-        form: body
+        form: body,
+        host:'122.96.59.104',
+        port: 80
     };
 
     var buffer = "";
@@ -294,7 +296,7 @@ app.get('/api/m3u8/:episodeSid', function(req, res) {
     if (req.params.episodeSid == "23576") {
 
         GetM3u8(5, req.params.episodeSid, res);
-        
+
     } else {
 
         client.exists(key, function(err, reply) {
@@ -322,7 +324,6 @@ app.get('/api/m3u8/:episodeSid', function(req, res) {
     // Check Redis and get from remote
     var key = api;
     cacheAndGet(key, api, body, getJSON, function(json){
-        console.log(json);
         res.send(json);
     })
  });
