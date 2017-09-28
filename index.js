@@ -400,6 +400,14 @@ app.get('/api/m3u8/:episodeSid', function(req, res) {
     
  })
 
+/**
+ *
+ */
+app.get('/api/flushdb', function(req, res) {
+  client.flushdb( function (err, succeeded) {
+    res.send('flush success');
+  });
+})
 
 
 /**
