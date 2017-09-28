@@ -7,7 +7,7 @@ function Config(){
 
         case 'production':
             return {
-            	server: 'http://13.124.10.165'
+            	server: 'https://13.124.10.165'
             };
 
         default:
