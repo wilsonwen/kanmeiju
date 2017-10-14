@@ -40,12 +40,13 @@ app.use(parser.urlencoded({ extended: true }));
 SERVER = "http://api.rr.tv";
 SECRET_KEY = "clientSecret=08a30ffbc8004c9a916110683aab0060";
 FAKE_HEADERS = {
-    "clientType": "android_%E8%B1%8C%E8%B1%86%E8%8D%9A",
-    "clientVersion": "3.5.3.1",
+    "clientType": "android_RRMJ",
+    "clientVersion": "3.6.3",
     "deviceId": "861134030056126",
     "token": "6b6cfdd3e90843c0a0914425638db7ef",
     "signature": "643c184f77372e364550e77adc0360cd",
-    "t": "1491433993933"
+    "t": "1491433993933",
+    "Authentication": "RRTV 470164b995ea4aa5a53f9e5cbceded472:IxIYBj:LPWfRb:I9gvePR5R2N8muXD7NWPCj"
 };
 
 /**
@@ -99,8 +100,7 @@ function getJSON(url, body, callback, headers=FAKE_HEADERS) {
         url : url,
         headers : headers,
         method: 'POST',
-        form: body,
-        proxy: process.env.PROXY
+        form: body
     };
 
     var buffer = "";
@@ -113,6 +113,7 @@ function getJSON(url, body, callback, headers=FAKE_HEADERS) {
             buffer += data;
         }).on('end', function() {     
             callback(buffer);
+            console.log(buffer);
         });
     });  
 }
