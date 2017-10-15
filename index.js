@@ -7,6 +7,7 @@ var md5 = require('md5')
 var redis = require('redis')
 var mongoose = require('mongoose')
 var randomstring = require('randomstring')
+var ProxyLists = require('proxy-lists');
 var app = express();
 var client = redis.createClient(process.env.REDIS_URL);
 
@@ -49,6 +50,7 @@ FAKE_HEADERS = {
     "Authentication": "RRTV 470164b995ea4aa5a53f9e5cbceded472:IxIYBj:LPWfRb:I9gvePR5R2N8muXD7NWPCj"
 };
 REQUEST_COUNT = 0;
+PROXIES = [];
 
 /**
  * Get time
@@ -96,13 +98,48 @@ app.get('/', function(req, res) {
  * headers - headers if necessary
  */
 function getJSON(url, body, callback, headers=FAKE_HEADERS) {
-    
-    var options = {
-        url : url,
-        headers : headers,
-        method: 'POST',
-        form: body
+
+    // Change proxy every 2000 requests
+    var proxy_option = {
+        countries: ['us'],
+        protocols: ['http']
     };
+    console.log("REQUEST_COUNT: " + REQUEST_COUNT);
+    if (REQUEST_COUNT++ % 5000 == 0) {
+        // `gettingProxies` is an event emitter object.
+        var gettingProxies = ProxyLists.getProxiesFromSource('coolproxy', proxy_option);
+        PROXIES = [];
+        gettingProxies.on('data', function(proxies) {
+            PROXIES = PROXIES.concat(proxies);
+        });
+        gettingProxies.on('error', function(error) {
+            console.error(error);
+        });
+        gettingProxies.once('end', function() {
+            console.log(PROXIES);
+        });
+    }
+    
+    var options = {}
+    if (PROXIES.length == 0) {
+        options = {
+            url : url,
+            headers : headers,
+            method: 'POST',
+            form: body
+        };
+    } else {
+        var proxy = PROXIES[REQUEST_COUNT%PROXIES.length];
+        var proxyurl = "http://" + proxy.ipAddress + ":" + proxy.port;
+        console.log(proxyurl);
+        options = {
+            url : url,
+            headers : headers,
+            method: 'POST',
+            form: body,
+            proxy: proxyurl
+        };
+    }
 
     var buffer = "";
     var req = request(options).on('error', function(err) {
@@ -299,7 +336,7 @@ app.get('/api/m3u8/:episodeSid', function(req, res) {
                 res.send(reply);
             });
         } else {
-            if(REQUEST_COUNT++ % 500 == 0) {
+            if(REQUEST_COUNT % 5000 == 0) {
                 GetToken(function(){
                     GetM3u8(3, req.params.episodeSid, res);
                 });

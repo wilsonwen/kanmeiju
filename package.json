@@ -17,6 +17,7 @@
     "md5": "^2.2.1",
     "mongoose": "^4.11.0",
     "npm": "^4.5.0",
+    "proxy-lists": "^1.14.1",
     "randomstring": "^1.1.5",
     "redis": "^2.7.1",
     "request": "^2.81.0"
