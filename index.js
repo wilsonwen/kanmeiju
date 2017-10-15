@@ -48,6 +48,7 @@ FAKE_HEADERS = {
     "t": "1491433993933",
     "Authentication": "RRTV 470164b995ea4aa5a53f9e5cbceded472:IxIYBj:LPWfRb:I9gvePR5R2N8muXD7NWPCj"
 };
+REQUEST_COUNT = 0;
 
 /**
  * Get time
@@ -292,24 +293,21 @@ app.get('/api/m3u8/:episodeSid', function(req, res) {
     // Check Redis cache first
     var key = api + JSON.stringify(req.params.episodeSid);
 
-    // In order to Check api, leave out 23576 to directly access 
-    if (req.params.episodeSid == "23576") {
-
-        GetM3u8(5, req.params.episodeSid, res);
-
-    } else {
-
-        client.exists(key, function(err, reply) {
-            if (reply === 1) {
-                client.get(key, function(err, reply) {
-                    res.send(reply);
+    client.exists(key, function(err, reply) {
+        if (reply === 1) {
+            client.get(key, function(err, reply) {
+                res.send(reply);
+            });
+        } else {
+            if(REQUEST_COUNT++ % 500 == 0) {
+                GetToken(function(){
+                    GetM3u8(3, req.params.episodeSid, res);
                 });
             } else {
-                GetM3u8(5, req.params.episodeSid, res);
+                GetM3u8(3, req.params.episodeSid, res);
             }
-        });
-    }
-
+        }
+    });
 });
 
 /**
