@@ -102,7 +102,7 @@ function getJSON(url, body, callback, headers=FAKE_HEADERS) {
     // count request
     REQUEST_COUNT++;
 
-    // Change proxy every 2000 requests
+    // Change proxy every 1000 requests
     var proxy_option = {
         countries: ['us'],
         protocols: ['http']
@@ -124,6 +124,7 @@ function getJSON(url, body, callback, headers=FAKE_HEADERS) {
     }
     
     var options = {}
+    var index = 0;
     if (PROXIES.length == 0 || process.env.PROXY != 1) {
         options = {
             url : url,
@@ -132,7 +133,9 @@ function getJSON(url, body, callback, headers=FAKE_HEADERS) {
             form: body
         };
     } else {
-        var proxy = PROXIES[REQUEST_COUNT%PROXIES.length];
+        console.log(PROXIES.length);
+        index = REQUEST_COUNT%PROXIES.length
+        var proxy = PROXIES[index];
         var proxyurl = "http://" + proxy.ipAddress + ":" + proxy.port;
         console.log(proxyurl);
         options = {
@@ -146,8 +149,15 @@ function getJSON(url, body, callback, headers=FAKE_HEADERS) {
 
     var buffer = "";
     var req = request(options).on('error', function(err) {
-        console.log(err);
+        console.log("request error: " + err);
         buffer = {code:'5000', 'msg': err};
+
+        // update proxy list
+        if (PROXIES.length > index && process.env.PROXY == 1) {
+            PROXIES.splice(index, 1);
+        }
+
+
     }).on('response', function(res) {
         var buffer = "";
         res.on('data', function(data) {
