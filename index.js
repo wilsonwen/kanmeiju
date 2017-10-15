@@ -107,7 +107,7 @@ function getJSON(url, body, callback, headers=FAKE_HEADERS) {
     console.log("REQUEST_COUNT: " + REQUEST_COUNT);
     if (REQUEST_COUNT++ % 5000 == 0) {
         // `gettingProxies` is an event emitter object.
-        var gettingProxies = ProxyLists.getProxiesFromSource('coolproxy', proxy_option);
+        var gettingProxies = ProxyLists.getProxiesFromSource('freeproxylist', proxy_option);
         PROXIES = [];
         gettingProxies.on('data', function(proxies) {
             PROXIES = PROXIES.concat(proxies);
@@ -121,7 +121,7 @@ function getJSON(url, body, callback, headers=FAKE_HEADERS) {
     }
     
     var options = {}
-    if (PROXIES.length == 0) {
+    if (PROXIES.length == 0 && process.env.PROXY != 1) {
         options = {
             url : url,
             headers : headers,
