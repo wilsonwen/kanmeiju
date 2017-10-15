@@ -99,13 +99,16 @@ app.get('/', function(req, res) {
  */
 function getJSON(url, body, callback, headers=FAKE_HEADERS) {
 
+    // count request
+    REQUEST_COUNT++;
+
     // Change proxy every 2000 requests
     var proxy_option = {
         countries: ['us'],
         protocols: ['http']
     };
     console.log("REQUEST_COUNT: " + REQUEST_COUNT);
-    if (REQUEST_COUNT++ % 5000 == 0) {
+    if (REQUEST_COUNT % 1000 == 1) {
         // `gettingProxies` is an event emitter object.
         var gettingProxies = ProxyLists.getProxiesFromSource('freeproxylist', proxy_option);
         PROXIES = [];
@@ -121,7 +124,7 @@ function getJSON(url, body, callback, headers=FAKE_HEADERS) {
     }
     
     var options = {}
-    if (PROXIES.length == 0 && process.env.PROXY != 1) {
+    if (PROXIES.length == 0 || process.env.PROXY != 1) {
         options = {
             url : url,
             headers : headers,
@@ -336,7 +339,7 @@ app.get('/api/m3u8/:episodeSid', function(req, res) {
                 res.send(reply);
             });
         } else {
-            if(REQUEST_COUNT % 5000 == 0) {
+            if(REQUEST_COUNT % 1000 == 0) {
                 GetToken(function(){
                     GetM3u8(3, req.params.episodeSid, res);
                 });
