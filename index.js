@@ -249,7 +249,7 @@ function GetM3u8(count, episodeSid, res) {
     if(count < 0) return;
     console.log('GetM3u8 ' + count)
 
-    var api = SERVER + '/video/findM3u8ByEpisodeSid'
+    var api = SERVER + '/video/findM3u8ByEpisodeSidAuth'
     
     // calculate signature
     var headers = FAKE_HEADERS;
