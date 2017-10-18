@@ -3,7 +3,7 @@ html, body {
 }
 
 #wrapper {
-  min-height: 100%;
+  min-height: 40%;
 }
 
 #root {

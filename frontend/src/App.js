@@ -11,20 +11,8 @@ class App extends Component {
       <div className="App container">
 
         {/* Navigation bar */}
-        <Nav />
+        <p>由于版权问题，看美剧暂停运营。</p>
 
-
-        <div className="row">
-        	<div className="col-sm-2">
-        		<Leftbar />
-        	</div>
-        	<div className="content col-sm-8">
-        		{this.props.children}
-        	</div>
-        	<div className="col-sm-2">
-        		<Rightbar />
-        	</div>
-        </div>
           
         
       </div>
