@@ -201,8 +201,8 @@ function cacheAndGet(key, api, body, getter, callback) {
  * {'title' : 'bigbang'}
  */
 app.get('/api/search/:title', function(req, res) {
-    var api = SERVER + '/v3plus/video/search'
-    var body = {'title': req.params.title };
+    var api = SERVER + '/v3plus/season/query'
+    var body = {'name': req.params.title, 'page': '1', 'rows': '20' };
     console.log('/api/search/');
 
     // Check Redis and get from remote
@@ -361,6 +361,22 @@ app.get('/api/m3u8/:episodeSid', function(req, res) {
 });
 
 /**
+ * API: latest
+ *
+ */
+ app.get('/api/latest', function(req, res) {
+    var api = SERVER + '/v3plus/season/usk/index'
+    var body = {'page':'1', 'rows':'20'}
+    console.log('/api/index');
+
+    // Check Redis and get from remote
+    var key = api;
+    cacheAndGet(key, api, body, getJSON, function(json){
+        res.send(json);
+    })
+ });
+
+/**
  * API: Index
  *
  */
@@ -429,7 +445,7 @@ app.get('/api/m3u8/:episodeSid', function(req, res) {
  *
  */
  app.get('/api/category/:categoryType/:pages', function(req, res) {
-    var api = SERVER + '/v3plus/video/search'
+    var api = SERVER + '/video/search'
     var body = {'name': 'cat_list', 
                        'cat': req.params.categoryType, 
                        'page': req.params.pages};
