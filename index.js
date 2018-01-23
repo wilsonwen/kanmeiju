@@ -306,6 +306,9 @@ function GetToken(callback) {
     var body = {}
     var name = randomstring.generate(8)
     body['usid'] = '123123123123331222'
+    if (process.env.usid != null) {
+        body['usid'] = process.env.usid
+    }
     body['platformName'] = 'qq'
     body['nickName'] = name
     body['userName'] = '123123123123331222'
