@@ -305,10 +305,10 @@ function GetToken(callback) {
     var headers = FAKE_HEADERS;
     var body = {}
     var name = randomstring.generate(8)
-    body['usid'] = md5(name)
+    body['usid'] = '123123123123331222'
     body['platformName'] = 'qq'
     body['nickName'] = name
-    body['userName'] = name
+    body['userName'] = '123123123123331222'
     body['securityCode'] = ''
 
     // Record token change 
