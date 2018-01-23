@@ -42,7 +42,7 @@ SERVER = "http://api.rr.tv";
 SECRET_KEY = "clientSecret=08a30ffbc8004c9a916110683aab0060";
 FAKE_HEADERS = {
     "clientType": "android_RRMJ",
-    "clientVersion": "3.6.2",
+    "clientVersion": "3.6.3",
     "deviceId": "861134030056126",
     "token": "6b6cfdd3e90843c0a0914425638db7ef",
     "signature": "643c184f77372e364550e77adc0360cd",
@@ -300,7 +300,7 @@ function GetM3u8(count, episodeSid, res) {
  */
 function GetToken(callback) {
     console.log('GetToken');
-    var api = SERVER + '/user/platReg'
+    var api = SERVER + '/user/platLogin'
 
     var headers = FAKE_HEADERS;
     var body = {}
