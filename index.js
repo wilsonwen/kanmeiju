@@ -10,6 +10,7 @@ var randomstring = require('randomstring')
 var ProxyLists = require('proxy-lists');
 var app = express();
 var client = redis.createClient(process.env.REDIS_URL);
+var fs = require('fs')
 
 
 /**
@@ -49,8 +50,20 @@ FAKE_HEADERS = {
     "t": "1491433993933",
     "Authentication": "RRTV 470164b995ea4aa5a53f9e5cbceded472:IxIYBj:LPWfRb:I9gvePR5R2N8muXD7NWPCj"
 };
+
 REQUEST_COUNT = 0;
 PROXIES = [];
+TOKENS = [];
+
+var lineReader = require('readline').createInterface({
+    input: fs.createReadStream('token.txt')
+});
+lineReader.on('line', function (line) {
+    var s = line.trim()
+    TOKENS.push(s)
+});
+
+
 
 /**
  * Get time
@@ -101,6 +114,10 @@ function getJSON(url, body, callback, headers=FAKE_HEADERS) {
 
     // count request
     REQUEST_COUNT++;
+
+    // change token
+    FAKE_HEADERS['token'] = TOKENS[REQUEST_COUNT%TOKENS.length]
+
 
     // Change proxy every 1000 requests
     var proxy_option = {
@@ -286,11 +303,8 @@ function GetM3u8(count, episodeSid, res) {
             client.set(key, json);
             client.expire(key, 3500);
         } else {
-            // token being banned, need change
-            GetToken(function(){
-                count = count - 1;
-                GetM3u8(count, episodeSid, res);
-            });
+            
+            GetM3u8(count, episodeSid, res);
         }
     }, headers); 
 }
@@ -352,13 +366,9 @@ app.get('/api/m3u8/:episodeSid', function(req, res) {
                 res.send(reply);
             });
         } else {
-            if(REQUEST_COUNT % 1000 == 0) {
-                GetToken(function(){
-                    GetM3u8(3, req.params.episodeSid, res);
-                });
-            } else {
+
                 GetM3u8(3, req.params.episodeSid, res);
-            }
+            
         }
     });
 });
