@@ -309,7 +309,7 @@ function GetToken(callback) {
     if (process.env.usid != null) {
         body['usid'] = process.env.usid
     }
-    body['platformName'] = 'qq'
+    body['platformName'] = 'sina'
     body['nickName'] = name
     body['userName'] = '123123123123331222'
     body['securityCode'] = ''
